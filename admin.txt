@@ -1,0 +1,83 @@
+'use strict'
+
+const mongoose = require('mongoose');
+const registeredUser=require('./addressBook');
+const db = require('../connection/connection');
+const user = mongoose.model('registerUser');
+
+
+module.exports = function () {
+    return {
+        adminUpdate: function (obj, cb) {
+
+            const prefix = 'AC';
+            var accountNumber = Math.floor(Math.random() * 100000000000000) + 99999999999999;
+            var customerAccountnumber = prefix + accountNumber;
+
+            console.log(customerAccountnumber);
+
+            if ((obj.role = 'admin') && (obj.status = 'approved')) {
+                console.log('update query')
+               
+                user.findOneAndUpdate({"":""},
+                    {
+                        $set:
+                        {
+                            AccountNumber: '$customerAccountnumber',
+                            vesrifiedUser: true
+                        }
+                    },
+                    { upsert: true }, function (err) {
+                    if (err)
+                        cb(false)
+                    else
+                        cb(true)
+                })
+            }
+            else {
+                db.collection.remove(
+                    { username: '' },
+                    {
+                        justOne: true,
+
+                    }
+                ).then(res => {
+                    cb(null, res);
+                })
+
+            }
+
+
+
+
+
+        }
+    }
+// }
+
+
+// exports.adminUpdate = async (req)=>{
+//     return new Promise(async (resolve,reject)=>{
+//          try {
+//             var arrayfield=[];
+
+//         //    var indexinfo= elastic.addDocument(userDetails).then(function (result) {     console.log( JSON.stringify(result) );
+            
+//         //     return resolve(result);
+//         // });
+//         //    
+
+//       var  savedData=  user.find({},{"email":1}, (err, doc) => {
+//             if (err) {
+//                console.log("Something wrong when updating data! "+err);
+//            }            
+//       });
+//       console.log('savedData --  '+JSON.stringify(savedData))
+//                return resolve(savedData);
+//         } catch (error) {
+//             console.log(error);
+//             return reject(error);
+//         }
+//     });
+// };
+}
